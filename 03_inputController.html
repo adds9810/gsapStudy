@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>01_motionPath</title>
+    <title>03_inputController</title>
   </head>
   <body>
     <svg
@@ -705,7 +705,7 @@
           path: "#route", // 경로명
           align: tiger, // 기준
         },
-        onUpdated: updated, // 애니메이션 재생될 땨 지속적으로 호출
+        onUpdate: updated, // 애니메이션 재생될 땨 지속적으로 호출
         onComplete: () => {
           // 완료에부 체크 가능
           console.log("애니메이션 종료");

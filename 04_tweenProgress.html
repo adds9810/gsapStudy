@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>02_getterSetter</title>
+    <title>04_tweenProgress</title>
   </head>
   <body>
     <svg
@@ -694,6 +694,9 @@
       //   }
 
       const tiger = $("#tiger");
+      const button = $("#button");
+      const time = $("#time");
+      const progress = $("#progressSlider");
 
       // animation 추가로 정리, 등 이벤트 추가
       const animation = gsap.to(tiger, {
@@ -702,15 +705,94 @@
           path: "#route", // 경로명
           align: tiger, // 기준
         },
+        onUpdate: updated, // 애니메이션 재생될 땨 지속적으로 호출
+        onComplete: () => {
+          // 완료에부 체크 가능
+          console.log("애니메이션 종료");
+          button.textContent = "play"; // 완료시 버튼 명 변경
+        },
+      });
+      function updated() {
+        // 재생중 시간 출력, toFixed(n) - 소수점 n번ㅂ째 자리 나오도록 설정 가능
+        time.textContent = this.time().toFixed(2);
+        // 재생 정도 출력
+        console.log(animation.progress());
+        progress.value = animation.progress();
+      }
+
+      // 일반함수 this : 나를 호출한 대상
+      // 화살표 함수 this : 바인딩 하지 않음, 무조건 부모, e.target 혹은 e.currentTarget를 대신 사용
+      // 실무에서 함수 줄여쓰는 경우가 많음 참고
+
+      // progress 변화가 생길 때 실행
+      progress.addEventListener("input", (e) => {
+        const target = e.target;
+        button.textContent = "play";
+
+        animation.progress(target.value).pause();
       });
 
       // pause를 제외하고는 getter,setter 역할 가능
       // animation.pause() // 정지
       // animation.paused(true) // 재생여부 확인
-      animation.progress(0.5); // 진행률
+      // animation.progress(0.5); // 진행률
       // animation.reversed() // 역재생 여부
       // animation.timeScale() // 배속
       // animation.time() // 재생 시작지점 설정
+
+      // toggle 변수 추가해서 정지, 재생 이벤트 실행
+      // let toggle = false;
+
+      // button.addEventListener("click", () => {
+      //   if (!toggle) {
+      //     animation.pause();
+      //   } else {
+      //     animation.play();
+      //   }
+
+      //   toggle = !toggle;
+      // });
+
+      // 위의 쉬운방법 - 메소드 paused 사용
+      button.addEventListener("click", () => {
+        animation.paused(!animation.paused());
+        // getter true / false, !가 추가되면 현재 상태와 반대로 바뀜
+
+        // button 클릭했을 때 재생 완료 상태라면 재시작하는 기능 추가
+        if (animation.progress() === 1) {
+          animation.restart();
+        }
+
+        // 재생 상태에 따라서 text 변경
+        button.textContent = animation.paused() ? "play" : "pause";
+      });
+
+      // gsap에 tween progress을 줄 수 있음
+      animation.pause();
+      // gsap.to(animation, { time: 3, duration: 2 });
+      // gsap.to(animation, { timeScale: 8, delay: 3 });
+      // gsap.to(animation, { progress: 0.32, duration: 2, ease: "bounce" });
+
+      // 클릭한 이미지가 있는 지점으로 이동라는 이벤트
+      home.addEventListener("click", () => {
+        animation.pause();
+        gsap.to(animation, { progress: 0, duration: 1 });
+      });
+
+      river.addEventListener("click", () => {
+        animation.pause();
+        gsap.to(animation, { progress: 0.28, duration: 1 });
+      });
+
+      mountain.addEventListener("click", () => {
+        animation.pause();
+        gsap.to(animation, { progress: 0.74, duration: 1 });
+      });
+
+      company.addEventListener("click", () => {
+        animation.pause();
+        gsap.to(animation, { progress: 1, duration: 1 });
+      });
     </script>
   </body>
 </html>
